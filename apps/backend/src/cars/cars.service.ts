@@ -1,26 +1,88 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CarsService {
-  create(createCarDto: CreateCarDto) {
-    return 'This action adds a new car';
+  constructor(private prisma: PrismaService) {}
+
+  async create(createCarDto: CreateCarDto) {
+    const { featureIds, categoryId, ...carData } = createCarDto;
+
+    return this.prisma.car.create({
+      data: {
+        ...carData,
+        category: categoryId ? { connect: { id: categoryId } } : undefined,
+        features:
+          featureIds && featureIds.length > 0
+            ? { connect: featureIds.map((id) => ({ id })) }
+            : undefined,
+      },
+      include: {
+        category: true,
+        features: true,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all cars`;
+  async findAll() {
+    return this.prisma.car.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        category: true,
+        features: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} car`;
+  async findOne(id: number) {
+    const car = await this.prisma.car.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        features: true,
+        maintenance: true,
+        reviews: true,
+      },
+    });
+
+    if (!car) {
+      throw new NotFoundException(`Car with ID ${id} not found`);
+    }
+
+    return car;
   }
 
-  update(id: number, updateCarDto: UpdateCarDto) {
-    return `This action updates a #${id} car`;
+  async update(id: number, updateCarDto: UpdateCarDto) {
+    await this.findOne(id);
+
+    const { featureIds, categoryId, ...carData } = updateCarDto;
+
+    return this.prisma.car.update({
+      where: { id },
+      data: {
+        ...carData,
+        category: categoryId ? { connect: { id: categoryId } } : undefined,
+
+        features: featureIds
+          ? { set: featureIds.map((fId) => ({ id: fId })) }
+          : undefined,
+      },
+      include: {
+        category: true,
+        features: true,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} car`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return this.prisma.car.delete({
+      where: { id },
+    });
   }
 }
