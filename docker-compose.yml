@@ -1,0 +1,25 @@
+version: '3.0'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: car_rental
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: car_rental
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres_data:
+
