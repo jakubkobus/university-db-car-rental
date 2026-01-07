@@ -6,15 +6,174 @@ datasource db {
   provider = "postgresql"
 }
 
-model Car {
+
+enum Role {
+  USER
+  ADMIN
+  EMPLOYEE
+}
+
+enum FuelType {
+  PETROL
+  DIESEL
+  ELECTRIC
+  HYBRID
+}
+
+enum Transmission {
+  MANUAL
+  AUTOMATIC
+}
+
+enum RentalStatus {
+  PENDING
+  CONFIRMED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum MaintenanceType {
+  ROUTINE_SERVICE
+  REPAIR
+  CLEANING
+  INSPECTION
+}
+
+enum MileageUnit {
+  KILOMETER
+  MILE
+}
+
+
+model User {
+  id         Int        @id  @default(autoincrement())
+  email      String     @unique
+  password   String 
+  firstName  String?
+  lastName   String?
+  role       Role      @default(USER)
+  phone      String?
+
+  rentals    Rental[]
+  reviews    Review[]
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Category {
   id           Int       @id  @default(autoincrement())
-  brand        String
-  model        String
-  year         Int
-  color        String?
-  pricePerDay  Decimal
-  isAvailable  Boolean   @default(true)
+  name         String    @unique
+  description  String?
+
+  cars         Car[]
 
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Feature {
+  id    Int      @id  @default(autoincrement())
+  name  String   @unique
+  icon  String?
+
+  cars  Car[]
+
+  @@map("features")
+}
+
+model Car {
+  id            Int            @id  @default(autoincrement())
+  brand         String
+  model         String
+  year          Int
+  plateNumber   String         @unique
+  color         String?
+  description   String?
+  
+  mileage       Decimal        @db.Decimal(10, 2)
+  mileageUnit   MileageUnit    @default(KILOMETER)
+  fuelType      FuelType
+  transmission  Transmission
+  engineSize    Float?
+  horsePower    Int?
+
+  pricePerDay   Decimal        @db.Decimal(10, 2)
+  deposit       Decimal        @db.Decimal(10, 2)
+  isAvailable   Boolean        @default(true)
+  imageUrl      String?
+
+  categoryId    Int?
+  category      Category?      @relation(fields: [categoryId], references: [id])
+  
+  features      Feature[]
+
+  rentals       Rental[]
+  reviews       Review[]
+  maintenance   Maintenance[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("cars")
+}
+
+model Rental {
+  id          Int           @id  @default(autoincrement())
+
+  startDate   DateTime
+  endDate     DateTime
+  totalPrice  Decimal       @db.Decimal(10, 2)
+  status      RentalStatus  @default(PENDING)
+
+  userId      Int
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  carId       Int
+  car         Car           @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("rentals")
+}
+
+model Review {
+  id         Int       @id  @default(autoincrement())
+  rating     Int 
+  comment    String?
+
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+
+  carId      Int
+  car        Car       @relation(fields: [carId], references: [id])
+
+  createdAt  DateTime  @default(now())
+
+  @@map("reviews")
+}
+
+model Maintenance {
+  id           Int              @id  @default(autoincrement())
+  type         MaintenanceType
+  description  String
+  cost         Decimal          @db.Decimal(10, 2)
+  date         DateTime
+
+  mileage      Decimal          @db.Decimal(10, 2)
+  mileageUnit  MileageUnit      @default(KILOMETER)
+
+  carId        Int
+  car          Car              @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@map("maintenances")
 }
