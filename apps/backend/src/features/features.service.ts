@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class FeaturesService {
-  create(createFeatureDto: CreateFeatureDto) {
-    return 'This action adds a new feature';
+  constructor(private prisma: PrismaService) {}
+
+  create(dto: CreateFeatureDto) {
+    return this.prisma.feature.create({ data: dto });
   }
 
   findAll() {
-    return `This action returns all features`;
+    return this.prisma.feature.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} feature`;
+    return this.prisma.feature.findUnique({ where: { id } });
   }
 
-  update(id: number, updateFeatureDto: UpdateFeatureDto) {
-    return `This action updates a #${id} feature`;
+  update(id: number, dto: UpdateFeatureDto) {
+    return this.prisma.feature.update({ where: { id }, data: dto });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} feature`;
+    return this.prisma.feature.delete({ where: { id } });
   }
 }

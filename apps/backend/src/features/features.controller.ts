@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { FeaturesService } from './features.service';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
@@ -18,17 +27,20 @@ export class FeaturesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.featuresService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.featuresService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFeatureDto: UpdateFeatureDto) {
-    return this.featuresService.update(+id, updateFeatureDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateFeatureDto: UpdateFeatureDto,
+  ) {
+    return this.featuresService.update(id, updateFeatureDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.featuresService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.featuresService.remove(id);
   }
 }
