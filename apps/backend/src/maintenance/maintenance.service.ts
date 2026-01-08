@@ -1,26 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMaintenanceDto } from './dto/create-maintenance.dto';
+import { PrismaService } from '../prisma/prisma.service';
 import { UpdateMaintenanceDto } from './dto/update-maintenance.dto';
 
 @Injectable()
 export class MaintenanceService {
-  create(createMaintenanceDto: CreateMaintenanceDto) {
-    return 'This action adds a new maintenance';
+  constructor(private prisma: PrismaService) {}
+
+  create(dto: CreateMaintenanceDto) {
+    return this.prisma.maintenance.create({
+      data: {
+        type: dto.type,
+        description: dto.description,
+        cost: dto.cost,
+        date: new Date(dto.date),
+        mileage: dto.mileage,
+        mileageUnit: dto.mileageUnit,
+        car: { connect: { id: dto.carId } },
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all maintenance`;
+    return this.prisma.maintenance.findMany({
+      include: {
+        car: { select: { brand: true, model: true, plateNumber: true } },
+      },
+      orderBy: { date: 'desc' },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} maintenance`;
+    return this.prisma.maintenance.findUnique({
+      where: { id },
+      include: {
+        car: { select: { brand: true, model: true, plateNumber: true } },
+      },
+    });
   }
 
-  update(id: number, updateMaintenanceDto: UpdateMaintenanceDto) {
-    return `This action updates a #${id} maintenance`;
+  update(id: number, dto: UpdateMaintenanceDto) {
+    return this.prisma.maintenance.update({
+      where: { id },
+      data: dto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} maintenance`;
+    return this.prisma.maintenance.delete({ where: { id } });
   }
 }
