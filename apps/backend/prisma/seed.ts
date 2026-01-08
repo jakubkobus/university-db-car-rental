@@ -124,6 +124,8 @@ async function main() {
       pricePerDay: 250,
       deposit: 1000,
       categoryId: catSuv.id,
+      imageUrl:
+        'https://e-mobilni.pl/wp-content/uploads/2023/09/toyota-rav4-phev-2023-1.jpg',
       features: {
         connect: [{ id: fGps.id }, { id: fAc.id }],
       },
@@ -147,6 +149,7 @@ async function main() {
       pricePerDay: 800,
       deposit: 5000,
       categoryId: catSport.id,
+      imageUrl: 'https://img.chceauto.pl/bmw/3/bmw-3-sedan-4638-52295_v1.webp',
       features: {
         connect: [{ id: fGps.id }, { id: fLeather.id }, { id: fSunroof.id }],
       },
@@ -169,6 +172,8 @@ async function main() {
       deposit: 2000,
       isAvailable: false,
       categoryId: catSedan.id,
+      imageUrl:
+        'https://media.carsandbids.com/cdn-cgi/image/width=2080,quality=70/39ba75f9b610a05237adc3ca976891cd48f5832c/photos/rGe22aq4-Va1cqtSEXb-(edit).jpg?t=172138681715',
       features: {
         connect: [{ id: fAuto.id }, { id: fGps.id }, { id: fAc.id }],
       },
@@ -191,6 +196,8 @@ async function main() {
       pricePerDay: 120,
       deposit: 500,
       categoryId: catEco.id,
+      imageUrl:
+        'https://electricmobility.store/car/fiat-500e-hatchback-24-kwh/fiat_500e_hatchback_2020-01/',
       features: {
         connect: [{ id: fAc.id }],
       },
@@ -214,6 +221,8 @@ async function main() {
       pricePerDay: 500,
       deposit: 2500,
       categoryId: catSport.id,
+      imageUrl:
+        'https://cdn.dealeraccelerate.com/modern/1/267/14019/1920x1440/2020-ford-mustang-gt-premium-perf-package-ii-fastback',
       features: {
         connect: [{ id: fLeather.id }],
       },
@@ -237,6 +246,8 @@ async function main() {
       pricePerDay: 180,
       deposit: 800,
       categoryId: catSedan.id,
+      imageUrl:
+        'https://namasce.pl/wp-content/uploads/2019/02/volkswagen_passat_variant_r-line_2019_1.jpg',
       features: {
         connect: [{ id: fGps.id }, { id: fAc.id }],
       },
