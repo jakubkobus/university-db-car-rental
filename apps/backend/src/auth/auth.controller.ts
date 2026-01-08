@@ -11,6 +11,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { User } from '@prisma/client';
+import { Public } from './decorators/public.decorator';
 
 interface RequestWithUser extends Request {
   user: User;
@@ -23,12 +24,14 @@ export class AuthController {
     private usersService: UsersService,
   ) {}
 
+  @Public()
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req: RequestWithUser) {
     return this.authService.login(req.user);
   }
 
+  @Public()
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
