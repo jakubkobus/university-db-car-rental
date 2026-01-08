@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { RentalsModule } from './rentals/rentals.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
     RentalsModule,
     ReviewsModule,
     MaintenanceModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
