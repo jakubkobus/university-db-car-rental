@@ -5,6 +5,7 @@ import {
   IsString,
   IsArray,
   Min,
+  IsBoolean,
 } from 'class-validator';
 import { FuelType, MileageUnit, Transmission } from '@prisma/client';
 
@@ -23,15 +24,19 @@ export class CreateCarDto {
   plateNumber: string;
 
   @IsString()
-  color: string;
+  @IsOptional()
+  color?: string;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
 
   @IsNumber()
   @Min(0)
   mileage: number;
 
   @IsEnum(MileageUnit)
-  @IsOptional()
-  mileageUnit?: MileageUnit;
+  mileageUnit: MileageUnit;
 
   @IsEnum(FuelType)
   fuelType: FuelType;
@@ -40,12 +45,28 @@ export class CreateCarDto {
   transmission: Transmission;
 
   @IsNumber()
+  @IsOptional()
+  engineSize?: number;
+
+  @IsNumber()
+  @IsOptional()
+  horsePower?: number;
+
+  @IsNumber()
   @Min(0)
   pricePerDay: number;
 
   @IsNumber()
   @Min(0)
   deposit: number;
+
+  @IsBoolean()
+  @IsOptional()
+  isAvailable?: boolean;
+
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
 
   @IsNumber()
   @IsOptional()
