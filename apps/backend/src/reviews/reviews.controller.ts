@@ -11,6 +11,9 @@ import {
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Public } from '../auth/decorators/public.decorator';
+import { Role } from '@prisma/client';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -21,6 +24,7 @@ export class ReviewsController {
     return this.reviewsService.create(createReviewDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.reviewsService.findAll();
@@ -39,6 +43,7 @@ export class ReviewsController {
     return this.reviewsService.update(id, updateReviewDto);
   }
 
+  @Roles(Role.ADMIN, Role.EMPLOYEE)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.reviewsService.remove(id);
