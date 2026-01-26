@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 async function getCars(): Promise<Car[]> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cars`, {
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {

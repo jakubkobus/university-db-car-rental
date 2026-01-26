@@ -254,6 +254,31 @@ async function main() {
     },
   });
 
+  // Porsche 811 gt3rs (upcoming rental)
+  const car7 = await prisma.car.create({
+    data: {
+      brand: 'Porsche',
+      model: '911 GT3RS',
+      year: 2023,
+      plateNumber: 'K0 GT3RS',
+      color: 'Błękitny',
+      description: 'Supersamochód na każdą okazję.',
+      mileage: 1200,
+      fuelType: FuelType.PETROL,
+      transmission: Transmission.AUTOMATIC,
+      engineSize: 3.0,
+      horsePower: 500,
+      pricePerDay: 1000,
+      deposit: 2500,
+      categoryId: catSport.id,
+      imageUrl:
+        'https://media.craiyon.com/2025-07-16/03SsmqYzTNGYnBd1ec5kfQ.webp',
+      features: {
+        connect: [{ id: fGps.id }, { id: fAc.id }],
+      },
+    },
+  });
+
   await prisma.rental.create({
     data: {
       startDate: new Date('2023-12-01T10:00:00Z'),
