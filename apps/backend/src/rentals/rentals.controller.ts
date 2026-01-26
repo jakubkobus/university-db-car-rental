@@ -32,6 +32,11 @@ export class RentalsController {
     return this.rentalsService.create(createRentalDto);
   }
 
+  @Get('my')
+  findMyRentals(@Request() req: RequestWithUser) {
+    return this.rentalsService.findByUserId(req.user.id);
+  }
+
   @Roles(Role.ADMIN, Role.EMPLOYEE)
   @Get()
   findAll() {

@@ -30,6 +30,17 @@ export class RentalsService {
     });
   }
 
+  async findByUserId(userId: number) {
+    return this.prisma.rental.findMany({
+      where: { userId },
+      include: {
+        car: true,
+        user: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   findAll() {
     return this.prisma.rental.findMany({
       include: {
