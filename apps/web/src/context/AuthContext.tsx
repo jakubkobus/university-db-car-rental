@@ -20,13 +20,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const fetchProfile = async () => {
+  const fetchProfile = async (): Promise<User | null> => {
     try {
       const { data } = await api.get<User>("/auth/profile");
       setUser(data);
+      return data;
     } catch (error) {
       console.error("Failed to fetch profile", error);
       logout();
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -43,15 +45,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (token: string) => {
     localStorage.setItem("token", token);
-    await fetchProfile();
-    router.push("/dashboard");
+    // Set cookie for middleware
+    document.cookie = `token=${token}; path=/; max-age=86400`; // 1 day
+    const currentUser = await fetchProfile();
+    const path = (currentUser?.role === "ADMIN" || currentUser?.role === "EMPLOYEE") ? "/admin" : "/dashboard";
+    window.location.href = path; // Force full page reload to ensure user state is loaded
     toast.success("Zalogowano pomyślnie!");
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     setUser(null);
-    router.push("/auth/login");
+    router.push("/login");
     toast.info("Wylogowano.");
   };
 
